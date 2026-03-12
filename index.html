@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Физика-Математика Тестілеуі</title>
+    
+    <script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #f0f4f8; --container-bg: #ffffff; --text-color: #2d3748;
+            --primary-blue: #3182ce; --hover-blue: #2b6cb0; --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        [data-theme="dark"] {
+            --bg-color: #1a202c; --container-bg: #2d3748; --text-color: #edf2f7;
+            --primary-blue: #63b3ed; --hover-blue: #4299e1; --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; transition: all 0.3s ease; }
+        .container { width: 95%; max-width: 650px; background-color: var(--container-bg); padding: 2rem; border-radius: 15px; box-shadow: var(--card-shadow); text-align: center; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 2px solid var(--primary-blue); padding-bottom: 10px; }
+        .btn { padding: 14px 20px; border: none; border-radius: 10px; cursor: pointer; font-size: 1rem; transition: all 0.2s; margin: 5px; font-weight: 500; }
+        .btn-primary { background-color: var(--primary-blue); color: white; width: 100%; border: 1px solid rgba(0,0,0,0.1); }
+        .btn-primary:hover:not(:disabled) { background-color: var(--hover-blue); transform: translateY(-2px); }
+        .btn-primary:disabled { opacity: 0.8; cursor: not-allowed; }
+        .btn-finish { background-color: #e53e3e; color: white; margin-top: 30px; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
+        @media (max-width: 500px) { .options-grid { grid-template-columns: 1fr; } }
+        #test-screen, #result-screen { display: none; }
+        .theme-toggle { background: none; border: 2px solid var(--primary-blue); color: var(--primary-blue); padding: 5px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+        input[type="text"] { padding: 15px; width: 80%; border-radius: 10px; border: 2px solid #cbd5e0; margin-bottom: 20px; font-size: 1.1rem; outline: none; background: white; color: black; }
+        .score-board { font-size: 1.1rem; color: var(--primary-blue); margin-bottom: 20px; display: flex; justify-content: space-between; }
+        .status-msg { margin-top: 20px; font-weight: bold; font-size: 1.1rem; min-height: 30px; }
+        .timer-box { font-weight: bold; color: #e53e3e; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2 id="title">Математика Тесті</h2>
+        <button class="theme-toggle" onclick="toggleTheme()">Күн/Түн</button>
+    </div>
+
+    <div id="name-screen">
+        <h3>Қош келдіңіз!</h3>
+        <p>Тестті бастау үшін есіміңізді жазыңыз:</p>
+        <input type="text" id="user-name-input" placeholder="Есіміңізді жазыңыз...">
+        <button class="btn btn-primary" id="start-btn" onclick="startTest()">Бастау</button>
+    </div>
+
+    <div id="test-screen">
+        <div class="score-board">
+            <div>Сұрақ: <span id="q-count">0/10</span></div>
+            <div class="timer-box">Уақыт: <span id="timer">0</span> сек</div>
+            <div>Ұпай: <span id="current-score">0</span></div>
+        </div>
+        <div id="question-text" style="font-size: 1.3rem; margin-bottom: 25px; font-weight: 500;"></div>
+        <div class="options-grid" id="options-container"></div>
+        <div id="status-message" class="status-msg"></div>
+        <button class="btn btn-finish" onclick="finishTest()">Тестті аяқтау</button>
+    </div>
+
+    <div id="result-screen">
+        <h2 style="color: #48bb78;">Тест аяқталды!</h2>
+        <p id="final-result-text" style="font-size: 1.2rem;"></p>
+        <p id="time-taken-text" style="font-weight: bold;"></p>
+        <div id="upload-status" style="color: var(--primary-blue);">Сақталуда...</div>
+        <button class="btn btn-primary" style="margin-top: 20px;" onclick="location.reload()">Қайта бастау</button>
+    </div>
+</div>
+
+<script>
+    // ОСЫ ЖЕРГЕ ӨЗІҢІЗДІҢ СКРИПТ URL-ІҢІЗДІ ҚОЙЫҢЫЗ
+    const API_URL = 'https://script.google.com/macros/s/AKfycbw3Mp3FAtDwtHXJC0GiBluXWNk3H4YahoCni5DM9NYo7N46voRkfIpsskjRN02gLTV2/exec';
+    
+    let userName = "";
+    let score = 0;
+    let questions = [];
+    let currentQIdx = 0;
+    let currentAnswerText = "";
+    
+    // Уақытты есептеуге арналған айнымалылар
+    let startTime;
+    let timerInterval;
+    let totalSeconds = 0;
+
+    function toggleTheme() {
+        document.body.hasAttribute('data-theme') 
+            ? document.body.removeAttribute('data-theme') 
+            : document.body.setAttribute('data-theme', 'dark');
+    }
+
+    function startTimer() {
+        startTime = new Date();
+        timerInterval = setInterval(() => {
+            const now = new Date();
+            totalSeconds = Math.floor((now - startTime) / 1000);
+            document.getElementById('timer').innerText = totalSeconds;
+        }, 1000);
+    }
+
+    async function startTest() {
+        const nameInput = document.getElementById('user-name-input').value.trim();
+        if (!nameInput) {
+            alert("Есіміңізді жазыңыз!");
+            return;
+        }
+        userName = nameInput;
+        
+        const startBtn = document.getElementById('start-btn');
+        startBtn.disabled = true;
+        startBtn.innerText = "Жүктелуде...";
+
+        try {
+            const response = await fetch(`${API_URL}?type=ten`);
+            questions = await response.json();
+            
+            if (!questions || questions.length === 0) throw new Error("Сұрақтар бос");
+
+            document.getElementById('name-screen').style.display = 'none';
+            document.getElementById('test-screen').style.display = 'block';
+            
+            startTimer(); // Таймерді бастау
+            displayQuestion();
+        } catch (error) {
+            console.error(error);
+            alert("Қате: Деректерді алу мүмкін болмады.");
+            startBtn.disabled = false;
+            startBtn.innerText = "Бастау";
+        }
+    }
+
+    function displayQuestion() {
+        if (currentQIdx >= questions.length) {
+            finishTest();
+            return;
+        }
+
+        const qData = questions[currentQIdx];
+        const qText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const statusMsg = document.getElementById('status-message');
+
+        document.getElementById('q-count').innerText = `${currentQIdx + 1}/${questions.length}`;
+        qText.innerHTML = qData.idquestion || qData.question || "Сұрақ табылмады";
+        currentAnswerText = qData.answer;
+        
+        optionsContainer.innerHTML = "";
+        statusMsg.innerText = "";
+
+        [qData.optionA, qData.optionB, qData.optionC, qData.optionD].forEach(optText => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-primary';
+            btn.innerHTML = optText;
+            btn.onclick = () => checkAnswer(optText, btn);
+            optionsContainer.appendChild(btn);
+        });
+
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            MathJax.typesetPromise();
+        }
+    }
+
+    function checkAnswer(selectedText, clickedBtn) {
+        const allButtons = document.querySelectorAll('.options-grid .btn');
+        allButtons.forEach(b => b.disabled = true);
+
+        const statusMsg = document.getElementById('status-message');
+
+        if (selectedText.trim() === currentAnswerText.trim()) {
+            score++;
+            document.getElementById('current-score').innerText = score;
+            statusMsg.style.color = "#48bb78";
+            statusMsg.innerText = "Дұрыс! 🎉";
+            clickedBtn.style.backgroundColor = "#48bb78";
+        } else {
+            statusMsg.style.color = "#e53e3e";
+            statusMsg.innerText = `Қате! Дұрыс жауап: ${currentAnswerText}`;
+            clickedBtn.style.backgroundColor = "#e53e3e";
+        }
+
+        currentQIdx++;
+        setTimeout(displayQuestion, 1500);
+    }
+
+    async function finishTest() {
+        clearInterval(timerInterval); // Таймерді тоқтату
+        
+        document.getElementById('test-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+        
+        document.getElementById('final-result-text').innerText = `${userName}, сіздің нәтижеңіз: ${score} / ${questions.length}`;
+        document.getElementById('time-taken-text').innerText = `Жалпы уақыт: ${totalSeconds} секунд`;
+
+        try {
+            await fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                body: JSON.stringify({ 
+                    name: userName, 
+                    score: score.toString(),
+                    time: totalSeconds.toString() // Уақытты жіберу
+                })
+            });
+            document.getElementById('upload-status').innerText = "Мәліметтер кестеге сақталды ✅";
+        } catch (error) {
+            document.getElementById('upload-status').innerText = "Сақтау кезінде қате кетті ❌";
+        }
+    }
+</script>
+</body>
+</html>
