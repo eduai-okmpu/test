@@ -1,221 +1,542 @@
 <!DOCTYPE html>
 <html lang="kk">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Физика-Математика Тестілеуі</title>
-    
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <script>
-  window.MathJax = {
-    tex: {
-      inlineMath: [['$', '$'], ['\\(', '\\)']]
-    }
-  };
-</script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
+        /* ── Animated background gradient ── */
+        @keyframes gradientShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.25); }
+            50%      { box-shadow: 0 0 35px rgba(139, 92, 246, 0.45); }
+        }
+
+        @keyframes shimmer {
+            0%   { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* ── Light (default) palette ── */
         :root {
-            --bg-color: #f0f4f8; --container-bg: #ffffff; --text-color: #2d3748;
-            --primary-blue: #3182ce; --hover-blue: #2b6cb0; --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --bg-start: #e0e7ff;
+            --bg-mid: #f0e6ff;
+            --bg-end: #dbeafe;
+            --container-bg: rgba(255, 255, 255, 0.72);
+            --container-border: rgba(255, 255, 255, 0.55);
+            --text-color: #1e1b4b;
+            --text-secondary: #4338ca;
+            --primary: #7c3aed;
+            --primary-hover: #6d28d9;
+            --primary-glow: rgba(124, 58, 237, 0.35);
+            --accent: #06b6d4;
+            --accent-glow: rgba(6, 182, 212, 0.30);
+            --danger: #f43f5e;
+            --danger-glow: rgba(244, 63, 94, 0.30);
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.30);
+            --input-bg: rgba(255, 255, 255, 0.85);
+            --input-border: rgba(124, 58, 237, 0.25);
+            --card-shadow: 0 8px 32px rgba(99, 102, 241, 0.15);
+            --backdrop-blur: 18px;
         }
+
+        /* ── Dark palette ── */
         [data-theme="dark"] {
-            --bg-color: #1a202c; --container-bg: #2d3748; --text-color: #edf2f7;
-            --primary-blue: #63b3ed; --hover-blue: #4299e1; --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+            --bg-start: #0f0a2a;
+            --bg-mid: #1a0a3e;
+            --bg-end: #0c1445;
+            --container-bg: rgba(30, 27, 75, 0.65);
+            --container-border: rgba(139, 92, 246, 0.18);
+            --text-color: #e0e7ff;
+            --text-secondary: #a5b4fc;
+            --primary: #a78bfa;
+            --primary-hover: #8b5cf6;
+            --primary-glow: rgba(167, 139, 250, 0.35);
+            --accent: #22d3ee;
+            --accent-glow: rgba(34, 211, 238, 0.30);
+            --danger: #fb7185;
+            --danger-glow: rgba(251, 113, 133, 0.25);
+            --success: #34d399;
+            --success-glow: rgba(52, 211, 153, 0.25);
+            --input-bg: rgba(30, 27, 75, 0.70);
+            --input-border: rgba(139, 92, 246, 0.35);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+            --backdrop-blur: 22px;
         }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; transition: all 0.3s ease; }
-        .container { width: 95%; max-width: 650px; background-color: var(--container-bg); padding: 2rem; border-radius: 15px; box-shadow: var(--card-shadow); text-align: center; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 2px solid var(--primary-blue); padding-bottom: 10px; }
-        .btn { padding: 14px 20px; border: none; border-radius: 10px; cursor: pointer; font-size: 1rem; transition: all 0.2s; margin: 5px; font-weight: 500; }
-        .btn-primary { background-color: var(--primary-blue); color: white; width: 100%; border: 1px solid rgba(0,0,0,0.1); }
-        .btn-primary:hover:not(:disabled) { background-color: var(--hover-blue); transform: translateY(-2px); }
-        .btn-primary:disabled { opacity: 0.8; cursor: not-allowed; }
-        .btn-finish { background-color: #e53e3e; color: white; margin-top: 30px; }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
-        @media (max-width: 500px) { .options-grid { grid-template-columns: 1fr; } }
-        #test-screen, #result-screen { display: none; }
-        .theme-toggle { background: none; border: 2px solid var(--primary-blue); color: var(--primary-blue); padding: 5px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; }
-        input[type="text"] { padding: 15px; width: 80%; border-radius: 10px; border: 2px solid #cbd5e0; margin-bottom: 20px; font-size: 1.1rem; outline: none; background: white; color: black; }
-        .score-board { font-size: 1.1rem; color: var(--primary-blue); margin-bottom: 20px; display: flex; justify-content: space-between; }
-        .status-msg { margin-top: 20px; font-weight: bold; font-size: 1.1rem; min-height: 30px; }
-        .timer-box { font-weight: bold; color: #e53e3e; }
+
+        /* ── Global styles ── */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(-45deg, var(--bg-start), var(--bg-mid), var(--bg-end), var(--bg-mid));
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: color 0.4s ease;
+            padding: 1rem;
+        }
+
+        /* ── Glassmorphism container ── */
+        .container {
+            width: 95%;
+            max-width: 650px;
+            background: var(--container-bg);
+            backdrop-filter: blur(var(--backdrop-blur));
+            -webkit-backdrop-filter: blur(var(--backdrop-blur));
+            padding: 2.5rem 2rem;
+            border-radius: 24px;
+            border: 1px solid var(--container-border);
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            animation: fadeSlideUp 0.6s ease-out, pulseGlow 4s ease-in-out infinite;
+        }
+
+        /* ── Header ── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: none;
+            padding-bottom: 1rem;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 10%;
+            width: 80%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
+            border-radius: 2px;
+        }
+
+        .header h2 {
+            font-weight: 700;
+            font-size: 1.35rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ── Theme toggle ── */
+        .theme-toggle {
+            background: rgba(124, 58, 237, 0.12);
+            border: 1.5px solid var(--primary);
+            color: var(--primary);
+            padding: 7px 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            letter-spacing: 0.02em;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 18px var(--primary-glow);
+            transform: scale(1.05);
+        }
+
+        /* ── Welcome screen ── */
+        #name-screen h3 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #name-screen p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        /* ── Input ── */
+        input[type="text"] {
+            padding: 14px 18px;
+            width: 85%;
+            border-radius: 14px;
+            border: 2px solid var(--input-border);
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+            outline: none;
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            backdrop-filter: blur(8px);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 5px;
+            letter-spacing: 0.015em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2.5s infinite;
+            pointer-events: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            width: 100%;
+            border: none;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px var(--primary-glow);
+            filter: brightness(1.1);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            filter: grayscale(0.3);
+        }
+
+        .btn-finish {
+            background: linear-gradient(135deg, var(--danger), #e11d48);
+            color: #fff;
+            margin-top: 30px;
+            width: auto;
+            padding: 12px 32px;
+            box-shadow: 0 4px 15px var(--danger-glow);
+        }
+
+        .btn-finish:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px var(--danger-glow);
+            filter: brightness(1.1);
+        }
+
+        /* ── Options grid ── */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 25px;
+        }
+
+        .options-grid .btn-primary {
+            border-radius: 14px;
+            font-size: 0.95rem;
+            padding: 16px 12px;
+            background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, var(--accent)));
+        }
+
+        @media (max-width: 500px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 1.8rem 1.2rem;
+            }
+        }
+
+        /* ── Screens ── */
+        #test-screen,
+        #result-screen {
+            display: none;
+        }
+
+        /* ── Score board ── */
+        .score-board {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            background: rgba(124, 58, 237, 0.08);
+            padding: 12px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--input-border);
+        }
+
+        .timer-box {
+            font-weight: 700;
+            color: var(--danger);
+            text-shadow: 0 0 8px var(--danger-glow);
+        }
+
+        /* ── Status message ── */
+        .status-msg {
+            margin-top: 20px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            min-height: 30px;
+            letter-spacing: 0.01em;
+        }
+
+        /* ── Result screen ── */
+        #result-screen h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--success), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <div class="header">
-        <h2 id="title">Математика Тесті</h2>
-        <button class="theme-toggle" onclick="toggleTheme()">Күн/Түн</button>
-    </div>
-
-    <div id="name-screen">
-        <h3>Қош келдіңіз!</h3>
-        <p>Тестті бастау үшін есіміңізді жазыңыз:</p>
-        <input type="text" id="user-name-input" placeholder="Есіміңізді жазыңыз...">
-        <button class="btn btn-primary" id="start-btn" onclick="startTest()">Бастау</button>
-    </div>
-
-    <div id="test-screen">
-        <div class="score-board">
-            <div>Сұрақ: <span id="q-count">0/10</span></div>
-            <div class="timer-box">Уақыт: <span id="timer">0</span> сек</div>
-            <div>Ұпай: <span id="current-score">0</span></div>
+    <div class="container">
+        <div class="header">
+            <h2 id="title">Математика Тесті</h2>
+            <button class="theme-toggle" onclick="toggleTheme()">☀️ / 🌙</button>
         </div>
-        <div id="question-text" style="font-size: 1.3rem; margin-bottom: 25px; font-weight: 500;"></div>
-        <div class="options-grid" id="options-container"></div>
-        <div id="status-message" class="status-msg"></div>
-        <button class="btn btn-finish" onclick="finishTest()">Тестті аяқтау</button>
+
+        <div id="name-screen">
+            <h3>Қош келдіңіз!</h3>
+            <p>Тестті бастау үшін есіміңізді жазыңыз:</p>
+            <input type="text" id="user-name-input" placeholder="Есіміңізді жазыңыз...">
+            <button class="btn btn-primary" id="start-btn" onclick="startTest()">Бастау</button>
+        </div>
+
+        <div id="test-screen">
+            <div class="score-board">
+                <div>Сұрақ: <span id="q-count">0/10</span></div>
+                <div class="timer-box">Уақыт: <span id="timer">0</span> сек</div>
+                <div>Ұпай: <span id="current-score">0</span></div>
+            </div>
+            <div id="question-text" style="font-size: 1.3rem; margin-bottom: 25px; font-weight: 500;"></div>
+            <div class="options-grid" id="options-container"></div>
+            <div id="status-message" class="status-msg"></div>
+            <button class="btn btn-finish" onclick="finishTest()">Тестті аяқтау</button>
+        </div>
+
+        <div id="result-screen">
+            <h2 style="color: #48bb78;">Тест аяқталды!</h2>
+            <p id="final-result-text" style="font-size: 1.2rem;"></p>
+            <p id="time-taken-text" style="font-weight: bold;"></p>
+            <div id="upload-status" style="color: var(--primary);">Сақталуда...</div>
+            <button class="btn btn-primary" style="margin-top: 20px;" onclick="location.reload()">Қайта бастау</button>
+        </div>
     </div>
 
-    <div id="result-screen">
-        <h2 style="color: #48bb78;">Тест аяқталды!</h2>
-        <p id="final-result-text" style="font-size: 1.2rem;"></p>
-        <p id="time-taken-text" style="font-weight: bold;"></p>
-        <div id="upload-status" style="color: var(--primary-blue);">Сақталуда...</div>
-        <button class="btn btn-primary" style="margin-top: 20px;" onclick="location.reload()">Қайта бастау</button>
-    </div>
-</div>
+    <script>
+        // ОСЫ ЖЕРГЕ ӨЗІҢІЗДІҢ СКРИПТ URL-ІҢІЗДІ ҚОЙЫҢЫЗ
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzEpdTyoWMQkdlT6Va5G5niUf1gvI3qkmYtzpBQtMDw8FoEUvOHCfGYiGbN_qMf20Vq3g/exec';
 
-<script>
-    // ОСЫ ЖЕРГЕ ӨЗІҢІЗДІҢ СКРИПТ URL-ІҢІЗДІ ҚОЙЫҢЫЗ
-    const API_URL = 'https://script.google.com/macros/s/AKfycbw3Mp3FAtDwtHXJC0GiBluXWNk3H4YahoCni5DM9NYo7N46voRkfIpsskjRN02gLTV2/exec';
-    
-    let userName = "";
-    let score = 0;
-    let questions = [];
-    let currentQIdx = 0;
-    let currentAnswerText = "";
-    
-    // Уақытты есептеуге арналған айнымалылар
-    let startTime;
-    let timerInterval;
-    let totalSeconds = 0;
+        let userName = "";
+        let score = 0;
+        let questions = [];
+        let currentQIdx = 0;
+        let currentAnswerText = "";
 
-    function toggleTheme() {
-        document.body.hasAttribute('data-theme') 
-            ? document.body.removeAttribute('data-theme') 
-            : document.body.setAttribute('data-theme', 'dark');
-    }
+        // Уақытты есептеуге арналған айнымалылар
+        let startTime;
+        let timerInterval;
+        let totalSeconds = 0;
 
-    function startTimer() {
-        startTime = new Date();
-        timerInterval = setInterval(() => {
-            const now = new Date();
-            totalSeconds = Math.floor((now - startTime) / 1000);
-            document.getElementById('timer').innerText = totalSeconds;
-        }, 1000);
-    }
-
-    async function startTest() {
-        const nameInput = document.getElementById('user-name-input').value.trim();
-        if (!nameInput) {
-            alert("Есіміңізді жазыңыз!");
-            return;
-        }
-        userName = nameInput;
-        
-        const startBtn = document.getElementById('start-btn');
-        startBtn.disabled = true;
-        startBtn.innerText = "Жүктелуде...";
-
-        try {
-            const response = await fetch(`${API_URL}?type=ten`);
-            questions = await response.json();
-            
-            if (!questions || questions.length === 0) throw new Error("Сұрақтар бос");
-
-            document.getElementById('name-screen').style.display = 'none';
-            document.getElementById('test-screen').style.display = 'block';
-            
-            startTimer(); // Таймерді бастау
-            displayQuestion();
-        } catch (error) {
-            console.error(error);
-            alert("Қате: Деректерді алу мүмкін болмады.");
-            startBtn.disabled = false;
-            startBtn.innerText = "Бастау";
-        }
-    }
-
-    function displayQuestion() {
-        if (currentQIdx >= questions.length) {
-            finishTest();
-            return;
+        function toggleTheme() {
+            document.body.hasAttribute('data-theme')
+                ? document.body.removeAttribute('data-theme')
+                : document.body.setAttribute('data-theme', 'dark');
         }
 
-        const qData = questions[currentQIdx];
-        const qText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const statusMsg = document.getElementById('status-message');
-
-        document.getElementById('q-count').innerText = `${currentQIdx + 1}/${questions.length}`;
-        qText.innerHTML = qData.idquestion || qData.question || "Сұрақ табылмады";
-        currentAnswerText = qData.answer;
-        
-        optionsContainer.innerHTML = "";
-        statusMsg.innerText = "";
-
-        [qData.optionA, qData.optionB, qData.optionC, qData.optionD].forEach(optText => {
-            const btn = document.createElement('button');
-            btn.className = 'btn btn-primary';
-            btn.innerHTML = optText;
-            btn.onclick = () => checkAnswer(optText, btn);
-            optionsContainer.appendChild(btn);
-        });
-
-        if (window.MathJax && window.MathJax.typesetPromise) {
-            MathJax.typesetPromise();
-        }
-    }
-
-    function checkAnswer(selectedText, clickedBtn) {
-        const allButtons = document.querySelectorAll('.options-grid .btn');
-        allButtons.forEach(b => b.disabled = true);
-
-        const statusMsg = document.getElementById('status-message');
-
-        if (selectedText.trim() === currentAnswerText.trim()) {
-            score++;
-            document.getElementById('current-score').innerText = score;
-            statusMsg.style.color = "#48bb78";
-            statusMsg.innerText = "Дұрыс! 🎉";
-            clickedBtn.style.backgroundColor = "#48bb78";
-        } else {
-            statusMsg.style.color = "#e53e3e";
-            statusMsg.innerText = `Қате! Дұрыс жауап: ${currentAnswerText}`;
-            clickedBtn.style.backgroundColor = "#e53e3e";
+        function startTimer() {
+            startTime = new Date();
+            timerInterval = setInterval(() => {
+                const now = new Date();
+                totalSeconds = Math.floor((now - startTime) / 1000);
+                document.getElementById('timer').innerText = totalSeconds;
+            }, 1000);
         }
 
-        currentQIdx++;
-        setTimeout(displayQuestion, 1500);
-    }
+        async function startTest() {
+            const nameInput = document.getElementById('user-name-input').value.trim();
+            if (!nameInput) {
+                alert("Есіміңізді жазыңыз!");
+                return;
+            }
+            userName = nameInput;
 
-    async function finishTest() {
-        clearInterval(timerInterval); // Таймерді тоқтату
-        
-        document.getElementById('test-screen').style.display = 'none';
-        document.getElementById('result-screen').style.display = 'block';
-        
-        document.getElementById('final-result-text').innerText = `${userName}, сіздің нәтижеңіз: ${score} / ${questions.length}`;
-        document.getElementById('time-taken-text').innerText = `Жалпы уақыт: ${totalSeconds} секунд`;
+            const startBtn = document.getElementById('start-btn');
+            startBtn.disabled = true;
+            startBtn.innerText = "Жүктелуде...";
 
-        try {
-            await fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                cache: 'no-cache',
-                body: JSON.stringify({ 
-                    name: userName, 
-                    score: score.toString(),
-                    time: totalSeconds.toString() // Уақытты жіберу
-                })
+            try {
+                const response = await fetch(`${API_URL}?type=ten`);
+                questions = await response.json();
+
+                if (!questions || questions.length === 0) throw new Error("Сұрақтар бос");
+
+                document.getElementById('name-screen').style.display = 'none';
+                document.getElementById('test-screen').style.display = 'block';
+
+                startTimer(); // Таймерді бастау
+                displayQuestion();
+            } catch (error) {
+                console.error(error);
+                alert("Қате: Деректерді алу мүмкін болмады.");
+                startBtn.disabled = false;
+                startBtn.innerText = "Бастау";
+            }
+        }
+
+        function displayQuestion() {
+            if (currentQIdx >= questions.length) {
+                finishTest();
+                return;
+            }
+
+            const qData = questions[currentQIdx];
+            const qText = document.getElementById('question-text');
+            const optionsContainer = document.getElementById('options-container');
+            const statusMsg = document.getElementById('status-message');
+
+            document.getElementById('q-count').innerText = `${currentQIdx + 1}/${questions.length}`;
+            qText.innerHTML = qData.idquestion || qData.question || "Сұрақ табылмады";
+            currentAnswerText = qData.answer;
+
+            optionsContainer.innerHTML = "";
+            statusMsg.innerText = "";
+
+            [qData.optionA, qData.optionB, qData.optionC, qData.optionD].forEach(optText => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-primary';
+                btn.innerHTML = optText;
+                btn.onclick = () => checkAnswer(optText, btn);
+                optionsContainer.appendChild(btn);
             });
-            document.getElementById('upload-status').innerText = "Мәліметтер кестеге сақталды ✅";
-        } catch (error) {
-            document.getElementById('upload-status').innerText = "Сақтау кезінде қате кетті ❌";
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
         }
-    }
-</script>
+
+        function checkAnswer(selectedText, clickedBtn) {
+            const allButtons = document.querySelectorAll('.options-grid .btn');
+            allButtons.forEach(b => b.disabled = true);
+
+            const statusMsg = document.getElementById('status-message');
+
+            if (selectedText.trim() === currentAnswerText.trim()) {
+                score++;
+                document.getElementById('current-score').innerText = score;
+                statusMsg.style.color = "#48bb78";
+                statusMsg.innerText = "Дұрыс! 🎉";
+                clickedBtn.style.backgroundColor = "#48bb78";
+            } else {
+                statusMsg.style.color = "#e53e3e";
+                statusMsg.innerText = `Қате! Дұрыс жауап: ${currentAnswerText}`;
+                clickedBtn.style.backgroundColor = "#e53e3e";
+            }
+
+            currentQIdx++;
+            setTimeout(displayQuestion, 1500);
+        }
+
+        async function finishTest() {
+            clearInterval(timerInterval); // Таймерді тоқтату
+
+            document.getElementById('test-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+
+            document.getElementById('final-result-text').innerText = `${userName}, сіздің нәтижеңіз: ${score} / ${questions.length}`;
+            document.getElementById('time-taken-text').innerText = `Жалпы уақыт: ${totalSeconds} секунд`;
+
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    cache: 'no-cache',
+                    body: JSON.stringify({
+                        name: userName,
+                        score: score.toString(),
+                        time: totalSeconds.toString() // Уақытты жіберу
+                    })
+                });
+                document.getElementById('upload-status').innerText = "Мәліметтер кестеге сақталды ✅";
+            } catch (error) {
+                document.getElementById('upload-status').innerText = "Сақтау кезінде қате кетті ❌";
+            }
+        }
+    </script>
 </body>
+
 </html>
